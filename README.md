@@ -8,9 +8,10 @@ Winlink session.
 
 When a session ends, RadioMail (and other varanny clients) send the modem
 `DISCONNECT` and then, a fraction of a second later, tell varanny to `stop` the
-modem. varanny stops it with SIGTERM, and xara exits as soon as it gets one.
+modem. varanny stops it with SIGTERM, and xara shuts down on that first signal
+without finishing an open link.
 
-So xara is killed while the disconnect handshake is still on the air. The RMS
+So xara stops while the disconnect handshake is still on the air. The RMS
 never sees the link close and keeps answering in a loop until its own timeout
 expires, tying up the gateway frequency.
 
@@ -31,7 +32,8 @@ Shutdown modem process gracefully
   `xara-varanny: waiting for the link to disconnect`, waits until xara reports
   `< DISCONNECTED` (at most 20 s), and then forwards SIGTERM to xara.
 
-varanny waits for the modem process to exit, so it waits for the link to close.
+varanny waits for the modem process to exit after signalling it, so it ends up
+waiting for the link to close.
 The wrapper is plain POSIX `sh` and runs on FreeBSD and Linux.
 
 Tested on air with RadioMail → varanny → xara FM → VE6FAR: the gateway now sees
@@ -104,9 +106,19 @@ ok   timeout caps the wait (2s)
 
 ## A better long-term fix
 
-The real fix belongs in xara or varanny: xara could finish an open link on its
-first SIGTERM, or varanny could wait for `DISCONNECTED` before stopping the
-modem. This wrapper avoids the problem until one of those exists.
+The wrapper works around a sequencing problem between the client and the
+modem. Better places to fix it:
+
+- **xara:** on the first SIGTERM, xara sets a stop flag and its audio loop ends
+  on the next block, whether or not a link is open. It could instead finish an
+  open link (with a timeout) before exiting, much like it already waits for PTT
+  release on a second signal.
+- **The client (RadioMail):** it could wait for `DISCONNECTED` before telling
+  varanny to `stop`.
+
+varanny can't do this itself: clients talk to the modem's command port
+directly, so varanny never sees `DISCONNECTED`. The most it could do is wait a
+fixed grace period before signalling the modem.
 
 ## License
 

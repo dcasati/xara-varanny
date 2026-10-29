@@ -4,10 +4,11 @@
 # Usage: xara-varanny CONFIG
 #
 # varanny stops the modem with SIGTERM as soon as the client says "stop", which
-# can be right after it asked for a disconnect. xara exits at once on SIGTERM,
-# so the other station never sees the link close and keeps retrying. This
-# wrapper holds the SIGTERM until an open link reports DISCONNECTED (at most
-# XARA_STOP_TIMEOUT seconds) and then forwards it to xara.
+# can be right after it asked for a disconnect. xara shuts down on the first
+# SIGTERM without finishing an open link, so the other station never sees the
+# link close and keeps retrying. This wrapper holds the SIGTERM until an open
+# link reports DISCONNECTED (at most XARA_STOP_TIMEOUT seconds) and then
+# forwards it to xara.
 #
 # Environment:
 #   XARA               xara binary (default: /usr/local/bin/xara)
