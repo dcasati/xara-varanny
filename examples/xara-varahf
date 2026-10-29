@@ -1,0 +1,4 @@
+#!/bin/sh
+# Started by varanny in place of VARA HF. varanny passes VARA's Args, which
+# xara does not use, so they are ignored here.
+exec /usr/local/libexec/xara-varanny /home/radio/.config/xara/xara.conf

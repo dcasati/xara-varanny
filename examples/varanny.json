@@ -1,0 +1,26 @@
+{
+  "Port": 8273,
+  "Delay": 5,
+  "Modems": [
+    {
+      "Name": "G90 xara HF",
+      "Type": "hf",
+      "Cmd": "/usr/local/bin/xara-varahf",
+      "DefaultConfig": "/usr/local/etc/varanny/xara-hf.ini",
+      "CatCtrl": {
+        "Port": 4532,
+        "Dialect": "hamlib"
+      }
+    },
+    {
+      "Name": "FT818ND xara FM",
+      "Type": "fm",
+      "Cmd": "/usr/local/bin/xara-varafm",
+      "DefaultConfig": "/usr/local/etc/varanny/xara-fm.ini",
+      "CatCtrl": {
+        "Port": 4533,
+        "Dialect": "hamlib"
+      }
+    }
+  ]
+}

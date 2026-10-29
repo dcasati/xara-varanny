@@ -1,0 +1,11 @@
+#!/bin/sh
+# Stand-in for xara. FAKE_LINK=1 opens a link that closes 2 s after SIGTERM
+# would have arrived; otherwise it idles until killed.
+trap 'echo "fake-xara: got TERM"; exit 0' TERM
+echo "xara: listening"
+if [ "${FAKE_LINK:-0}" = 1 ]; then
+	echo "    1.000 < CONNECTED N0CALL N0RMS NARROW"
+	sleep 3
+	echo "    4.000 < DISCONNECTED"
+fi
+while :; do sleep 0.2; done
